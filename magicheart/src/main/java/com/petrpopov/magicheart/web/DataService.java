@@ -34,4 +34,10 @@ public class DataService {
         dataSaver.addData(pulseData);
     }
 
+    @RequestMapping(value="values/{clientId}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Pulse> values(@PathVariable String clientId) {
+        List<Pulse> data = dataSaver.getData(clientId);
+        return data;
+    }
 }

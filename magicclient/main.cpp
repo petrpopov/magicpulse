@@ -1,11 +1,26 @@
-#include "mainwindow.h"
+#include "window.h"
+
+#include <QtGui>
 #include <QApplication>
+#include <QMessageBox>
+#include <QSystemTrayIcon>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    Q_INIT_RESOURCE(systray);
 
-    return a.exec();
+    QApplication app(argc, argv);
+
+    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
+        QMessageBox::critical(0, QObject::tr("Systray"),
+                              QObject::tr("I couldn't detect any system tray "
+                                          "on this system."));
+        return 1;
+    }
+    QApplication::setQuitOnLastWindowClosed(false);
+
+    Window window;
+    //window.show();
+
+    return app.exec();
 }

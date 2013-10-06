@@ -11,47 +11,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="//vjs.zencdn.net/4.1/video-js.css" rel="stylesheet">
 
+    <script src="//vjs.zencdn.net/4.1/video.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/resources/js/main.js"></script>
 </head>
 
 <body>
 
-<script type="text/javascript" src="/resources/js/test.js"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script type="text/javascript">
-    gamepadSupport.init();
-</script>
+    <video id="mainPlayer" class="video-js vjs-default-skin"
+           controls preload="auto" width="640" height="264"
+           poster="http://video-js.zencoder.com/oceans-clip.png"
+           data-setup='{"example_option":true}'>
+        <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4' />
+    </video>
 
-<c:set var="count" value="0" scope="page" />
+    <span>id:</span><label id="clientId">${clientId}</label>
+    <button id="sendButton">Send data</button>
 
-<table>
-    <thead>
-    <th>
-        Номер:
-    </th>
-    <th>
-        Значение по оси X:
-    </th>
-    <th>
-        Timestamp:
-    </th>
-    </thead>
-    <c:forEach var="data" items="${data}">
-        <tr>
-            <td>
-                <c:set var="count" value="${count + 1}" scope="page"/>
-                <c:out value="${count}"></c:out>
-            </td>
-            <td>
-                <c:out value="${data.value}"></c:out>
-            </td>
+    <div>
+        <label>Результаты</label>
+        <table id="table">
 
-            <td>
-                <c:out value="${data.timestamp}"></c:out>
-            </td>
-        </tr>
-    </c:forEach>
-</table>
+        </table>
+    </div>
+
+
 
 </body>
 </html>

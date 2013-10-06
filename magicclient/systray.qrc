@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/heart.svg</file>
+        <file>images/trash.svg</file>
+        <file>images/bad.svg</file>
+        <file>images/power_off.png</file>
+        <file>images/power_on.png</file>
+    </qresource>
+</RCC>

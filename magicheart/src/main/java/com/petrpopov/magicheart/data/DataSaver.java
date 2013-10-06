@@ -3,7 +3,9 @@ package com.petrpopov.magicheart.data;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: petrpopov
@@ -14,32 +16,49 @@ import java.util.List;
 @Component
 public class DataSaver {
 
-    volatile private List<Pulse> data = new ArrayList<Pulse>();
+    volatile private Map<String, List<Pulse>> data = new HashMap<String, List<Pulse>>();
+    //volatile private List<Pulse> data = new ArrayList<Pulse>();
 
     synchronized public void addData(PulseData someData) {
 
+        String clientId = someData.getClientId();
+        int pageNumber = someData.getPageNumber();
+
+        List<Pulse> pulses;
+        if( data.containsKey(clientId) ) {
+            pulses = data.get(clientId);
+
+            if( pageNumber == 0 )
+                pulses = new ArrayList<Pulse>();
+        }
+        else {
+            pulses = new ArrayList<Pulse>();
+            data.put(clientId, pulses);
+        }
+
         for (Pulse pulse : someData.getPulse()) {
-            if( contains(pulse))
+            if( contains(pulse, clientId))
                 continue;
 
-            if(data.size() <= 2048)
-                data.add(pulse);
-            else
-                data = new ArrayList<Pulse>();
+            pulses.add(pulse);
         }
     }
 
-    synchronized public List<Pulse> getData() {
+    synchronized public List<Pulse> getData(String clientId) {
 
-        if( data != null )
-            return data;
+        List<Pulse> pulses = data.get(clientId);
+        if( pulses != null )
+            return pulses;
 
         return new ArrayList<Pulse>();
     }
 
-    synchronized private boolean contains(Pulse pulse) {
+    synchronized private boolean contains(Pulse pulse, String clientId) {
 
-        for (Pulse p : data) {
+        if( !data.containsKey(clientId) )
+            return false;
+
+        for (Pulse p : data.get(clientId)) {
             if( p.getTimestamp().equals(pulse.getTimestamp())) {
                 return true;
             }
