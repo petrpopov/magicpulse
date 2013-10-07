@@ -27,6 +27,9 @@
         <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4' />
     </video>
 
+    <a href="/resources/distr/magicclient.dmg">Клиент под Mac OS X</a>
+    <a href="/resources/distr/magicclient.exe">Клиент под Windows</a>
+
     <span>id:</span><label id="clientId">${clientId}</label>
     <button id="sendButton">Send data</button>
 
