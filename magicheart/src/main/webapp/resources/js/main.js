@@ -34,7 +34,9 @@ $(function() {
             mainPlayer.on("play", function() {
                 var time = mainPlayer.currentTime();
                 if( time === 0 ) {
-                    console.log("Playing video from the beggining");
+                    var mes = "Playing video from the beggining";
+                    console.log(mes);
+                    $('#log').text( $('#log').text()+"\n" +mes );
                     startTiming();
                 }
                 else {
@@ -54,6 +56,7 @@ $(function() {
 
     function startTiming() {
         startTime = new Date().getTime();
+        $('#log').text("");
     }
 
     function stopTiming(pause) {
@@ -78,8 +81,14 @@ $(function() {
 
 
         var date = new Date(startTime);
-        console.log("Prepare to loading data, loaded data size: " + sensorData.length);
-        console.log("Start time is: " +date+ ", timestamp is: " +startTime );
+
+        var mes1 = "Prepare to loading data, loaded data size: " + sensorData.length;
+        console.log(mes1);
+        $('#log').text( $('#log').text()+"\n" +mes1 );
+
+        var mes2 = "Start time is: " +date+ ", timestamp is: " +startTime;
+        console.log(mes2);
+        $('#log').text( $('#log').text()+"\n" +mes2 );
 
         getSensorData(startTime, SIZE, page);
     }
@@ -90,7 +99,9 @@ $(function() {
             return;
         }
 
-        console.log("Loading sensor data with size: " + SIZE + " and page: " + page);
+        var mes = "Loading sensor data with size: " + SIZE + " and page: " + page;
+        console.log(mes);
+        $('#log').text( $('#log').text()+"\n" +mes );
 
         /*$.ajax({
             crossDomain:true,
@@ -114,8 +125,13 @@ $(function() {
 
         var pulseData = data.pulseData;
         if( pulseData.length === 0 ) {
-            console.log("Sensor data ended: no new data");
-            console.log("Sensor data size: " + sensorData.length);
+
+            var mes1 = "Sensor data ended: no new data";
+            var mes2 = "Sensor data size: " + sensorData.length;
+            console.log(mes1);
+            console.log(mes2);
+            $('#log').text( $('#log').text()+"\n" +mes1 );
+            $('#log').text( $('#log').text()+"\n" +mes2 );
             sensorDataEnded = true;
             return;
         }
@@ -125,7 +141,9 @@ $(function() {
             var pTimestamp = pulse.timestamp;
 
             if( pTimestamp > stopTime ) {
-                console.log("Sensor data ended: stopTimestamp found");
+                var mes = "Sensor data ended: stopTimestamp found";
+                $('#log').text( $('#log').text()+"\n" +mes );
+                console.log(mes);
                 sensorDataEnded = true;
 
                 sendedPage = 0;
@@ -154,7 +172,9 @@ $(function() {
         for(var i = 0; i < sensorData.length; i++) {
             var savedPulse = sensorData[i];
             if( savedPulse.timestamp === pulse.timestamp ) {
-                console.log("Found the same pulse in client data. Omitting...");
+                var mes = "Found the same pulse in client data. Omitting...";
+                console.log(mes);
+                $('#log').text( $('#log').text()+"\n" +mes );
                 return true;
             }
         }
@@ -164,7 +184,9 @@ $(function() {
 
     function sendSensorDataToServer() {
 
-        console.log("All data to send size: " + sensorData.length);
+        var mes = "All data to send size: " + sensorData.length;
+        console.log(mes);
+        $('#log').text( $('#log').text()+"\n" +mes );
 
         var dataToSend = [];
         for(var i = 0; i < SIZE; i++) {
@@ -187,7 +209,9 @@ $(function() {
 
     function sendSensorDataPage(dataToSend) {
 
-        console.log("Sending data page: " + sendedPage);
+        var mes = "Sending data page: " + sendedPage;
+        console.log(mes);
+        $('#log').text( $('#log').text()+"\n" +mes );
 
         $.ajax({
             type: "POST",
@@ -197,7 +221,9 @@ $(function() {
             mimeType: 'application/json',
             dataType: 'json',
             complete: function() {
-                console.log("Sended data page: " + sendedPage + " successfully");
+                var mes = "Sended data page: " + sendedPage + " successfully";
+                console.log(mes);
+                $('#log').text( $('#log').text()+"\n" +mes );
 
                 sendedPage++;
                 sendSensorDataToServer();

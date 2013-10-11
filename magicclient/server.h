@@ -25,6 +25,7 @@ private:
 
     qint64 getTimestamp(QRegExp exp);
     void error(QHttpResponse *resp);
+    void error(const QString &message, QHttpResponse *resp);
     QString getBody(QString callbackNumber, QList<Pulse *> );
 
     void handleTimestamp(qint64 timestamp, QHttpRequest *req, QHttpResponse *resp);

@@ -29,8 +29,14 @@ void Server::handle(QHttpRequest *req, QHttpResponse *resp)
     if( timeExp.indexIn(path) != -1 )
     {
         qint64 ts = getTimestamp(timeExp);
-        if( ts < 0 )
-            return error(resp);
+        if( ts < 0 ) {
+            if( ts == -1 )
+                return error("Wrong timestamp", resp);
+            else if( ts == -2 )
+                return error("NULL timestamp", resp);
+            else if( ts == -3 )
+                return error("Empty timestamp", resp);
+        }
 
         QDateTime time;
         time.setMSecsSinceEpoch(ts);
@@ -38,7 +44,7 @@ void Server::handle(QHttpRequest *req, QHttpResponse *resp)
     }
 
 
-    return error(resp);
+    return error("Incorrect request", resp);
 }
 
 void Server::handleTimestamp(qint64 timestamp, QHttpRequest *req, QHttpResponse *resp)
@@ -47,13 +53,13 @@ void Server::handleTimestamp(qint64 timestamp, QHttpRequest *req, QHttpResponse 
     resp->writeHead(200);
 
     if( jManager == NULL )
-        return error(resp);
+        return error("Internal error: no jManager", resp);
 
     QString callback = getRequestParam("callback", req);
 
     qint32 size = getRequestParamInt("size", req);
     if( size < 0 )
-        size = 50;
+        size = 250;
 
     qint32 page = getRequestParamInt("page", req);
     if( page < 0 )
@@ -80,6 +86,8 @@ QString Server::getRequestParam(QString const& param, QHttpRequest *req)
     if( shit > 0 )
         paramValue = paramValue.left(shit);
 
+    paramValue = paramValue.trimmed();
+
     return paramValue;
 }
 
@@ -101,9 +109,15 @@ qint32 Server::getRequestParamInt(QString const& param, QHttpRequest *req)
 qint64 Server::getTimestamp(QRegExp exp)
 {
     QString timestamp = exp.capturedTexts()[1];
+    if(timestamp == NULL)
+        return -2;
+
+    timestamp = timestamp.trimmed();
+    if( timestamp.isEmpty() || timestamp.isNull() )
+        return -3;
 
     bool ok = false;
-    qint64 ts = timestamp.toLong(&ok);
+    qint64 ts = timestamp.toLongLong(&ok);
 
     if( !ok )
         return -1;
@@ -113,8 +127,13 @@ qint64 Server::getTimestamp(QRegExp exp)
 
 void Server::error(QHttpResponse *resp)
 {
+    this->error("You aren't allowed here!", resp);
+}
+
+void Server::error(const QString &message, QHttpResponse *resp)
+{
     resp->writeHead(403);
-    resp->end(QByteArray("You aren't allowed here!"));
+    resp->end(message.toUtf8());
 }
 
 QString Server::getBody(QString callbackNumber, QList<Pulse *> values)
